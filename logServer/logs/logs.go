@@ -36,6 +36,9 @@ const (
 )
 
 func init() {
+	//connect to database
+	testconnect()
+
 	log_floder := createfloder()
 	errorp, err := os.Create(log_floder + error_log_name)
 	warnp, _ := os.Create(log_floder + warn_log_name)
