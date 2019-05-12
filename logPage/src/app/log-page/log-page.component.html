@@ -9,9 +9,9 @@
                     <h5>日志选择</h5>
                     <div class="listbox">
                         <nz-collapse nzAccordion ><!--日期列表-->
-                          <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" >
-                              <nz-dropdown *ngFor="let fileli of panel.list"><!--第几次构建的日志-->
-                                  <a nz-dropdown> {{fileli}}<i nz-icon type="down"></i> </a>
+                          <nz-collapse-panel *ngFor="let row1 of list" [nzHeader]="row1.name" >
+                              <nz-dropdown *ngFor="let row2 of row1.list"><!--第几次构建的日志-->
+                                  <a nz-dropdown> 第{{row2}}次构建<i nz-icon type="down"></i> </a>
                                   <ul nz-menu nzSelectable>
                                     <li nz-menu-item>
                                       <a>error.log</a>
@@ -30,8 +30,9 @@
                  </div>
               </div>
               <div nz-col nzSpan="21">
+                <h5>{{filename}}</h5>
                   <div id="textbox"><!--文本框-->
-                        dd
+                      <li class="text" *ngFor="let rows of logtext">{{rows}}</li>
                   </div>
               </div>
             </div>

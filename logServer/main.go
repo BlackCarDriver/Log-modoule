@@ -2,13 +2,23 @@ package main
 
 import(
 	"./logs"
+	"net/http"
+	"fmt"
 )
 
 func main(){
-	logs.Println("hahahahah","asdfasdfsdf","fasdfasdfasdfadsf")
-	logs.Log(logs.Err, "it will recorde to the error file!")
-	logs.Log(logs.Q_err, "It will not ouput to stdoutput!")
-	logs.Log(logs.Warn, "It will not ouput to warn file")
-	logs.Log(logs.Q_warn, "It will not ouput to warn file quietly!")
-	// logs.Test()
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", logs.Testnet)
+	mux.HandleFunc("/log/getlogtext", logs.SendLogText)
+	mux.HandleFunc("/log/getlogpage", logs.SendLogList)
+	server := &http.Server{
+		Addr : 			"localhost:8090",
+		Handler:        mux,
+		MaxHeaderBytes: 1 << 20,
+	}
+	logs.Println("begin to listen!")
+	err := server.ListenAndServe()
+	if err!=nil {
+		fmt.Println(err)
+	}
 }

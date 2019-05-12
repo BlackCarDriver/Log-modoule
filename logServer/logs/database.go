@@ -25,5 +25,6 @@ func testconnect() {
 	if err!= nil {
 		panic(err)
 	}
-	Println("Database Connect Scuess!")
+	//pointer of logfile still not init, you can not use logs.Println yet
+	fmt.Println("Database Connect Scuess!")
 }
