@@ -1,21 +1,47 @@
-<div class="row">
-  <button type="button" class="btn btn-default">（默认样式）Default</button>
 
-  <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-  <button type="button" class="btn btn-primary">（首选项）Primary</button>
-  
-  <!-- Indicates a successful or positive action -->
-  <button type="button" class="btn btn-success">（成功）Success</button>
-  
-  <!-- Contextual button for informational alert messages -->
-  <button type="button" class="btn btn-info">（一般信息）Info</button>
-  
-  <!-- Indicates caution should be taken with this action -->
-  <button type="button" class="btn btn-warning">（警告）Warning</button>
-  
-  <!-- Indicates a dangerous or potentially negative action -->
-  <button type="button" class="btn btn-danger">（危险）Danger</button>
-  
-  <!-- Deemphasize a button by making it look like a link while maintaining button behavior -->
-  <button type="button" class="btn btn-link">（链接）Link</button>
+<div nz-row nzType="flex" nzJustify="center" class="log-body">
+  <div nz-col nzSpan="22">
+    <nz-tabset>
+      <nz-tab nzTitle="系统日志">
+            <div nz-row nzType="flex"  nzJustify="center">
+              <div nz-col nzSpan="3">
+                 <div class="leftbox"><!--左侧选择框-->
+                    <h5>日志选择</h5>
+                    <div class="listbox">
+                        <nz-collapse nzAccordion ><!--日期列表-->
+                          <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" >
+                              <nz-dropdown *ngFor="let fileli of panel.list"><!--第几次构建的日志-->
+                                  <a nz-dropdown> {{fileli}}<i nz-icon type="down"></i> </a>
+                                  <ul nz-menu nzSelectable>
+                                    <li nz-menu-item>
+                                      <a>error.log</a>
+                                    </li>
+                                    <li nz-menu-item>
+                                      <a>warning.log</a>
+                                    </li>
+                                    <li nz-menu-item>
+                                      <a>inof.log</a>
+                                    </li>
+                                  </ul>
+                                </nz-dropdown>
+                          </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                 </div>
+              </div>
+              <div nz-col nzSpan="21">
+                  <div id="textbox"><!--文本框-->
+                        dd
+                  </div>
+              </div>
+            </div>
+      </nz-tab>
+      <nz-tab nzTitle="操作记录">
+        Content of Tab Pane 2
+      </nz-tab>
+    
+    </nz-tabset>
+  </div>
 </div>
+
+
