@@ -12,6 +12,7 @@ type  cataloge struct{
 	Name string  `json:"name"`
 	List []string   `json:"list"`
 }
+
 func setHeader(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "content-type")
@@ -35,7 +36,8 @@ func SendLogList(w http.ResponseWriter, r *http.Request){
 	if len(page)==0 {
 		return
 	}
-	writeJson(w, mockdate)
+	data := Readloglist()
+	writeJson(w, data)
 }
 // (url)/log/getlogpage
 //return specified log 
@@ -90,28 +92,53 @@ func readlogfile(path string)[]string{
 	return data
 }
 //read the floder of log and return the catologe of logs files
-func readloglist()[]cataloge{
+func Readloglist()[]cataloge{
 	var data []cataloge
-
+	dir,err:= os.Open(logs_root)
+	if err!=nil {
+		Log(Err,"Can not open logs_root when read logs list : ",err)
+		return data
+	}
+	defer dir.Close()
+	fileinfo,_:= dir.Readdir(-1)
+	var date_times = make(map[string]int)
+	for _,v := range fileinfo {		//traverse the floder
+		if v.IsDir() == false {
+			return data
+		}
+		dirname := v.Name()
+		dt := strings.Split(dirname, "#")
+		if len(dt)!=2 {
+			Log(Warn, "Find an illeage directory name in /logsfile : ", dirname)
+			continue
+		}
+		_, prs := date_times[dt[0]]
+		if prs == false {	//if still not push in data[]
+			var tc cataloge
+			tc.Name = dt[0] 
+			tc.List = append(tc.List, dt[1])
+			data = append(data, tc)
+		}else{ //already have a same date in data[]
+			for i,v := range data {	//traverse the array
+				if v.Name == dt[0] {
+					data[i].List = append(data[i].List, dt[1])
+					break
+				}
+			}
+		}
+		date_times[ dt[0] ] ++	
+	}
+	Println(data)
 	return data
 }
 
+/* example of mock data
 var	temttext = []string{
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file quietly!  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file quietly!  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file quietly!  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file  `,
-		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file quietly!  `,
 		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file  `,
 		`2019/05/11 13:04:07 [main.go] : It will not ouput to warn file quietly!  `,
 }
 var mockdate = []cataloge{
 	{"test1",[]string{"1","2","3"},},
 	{"test1",[]string{"1","2","3"},},
-	{"test1",[]string{"1","2","3"},},
-	{"test1",[]string{"1","2","3"},},
-	{"test1",[]string{"1","2","3"},},
 }
+*/
