@@ -6,3 +6,11 @@ export class loglist{
 export class codeformat{
 	text : string[];
 }
+// 操作日志目录
+export class Orelog {
+    public logid:       number;
+    public logtime:     string;
+    public admin:       string;
+    public module:      string;
+    public logsql:      string;
+}

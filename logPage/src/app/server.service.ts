@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {  loglist } from './struct'
+import { Observable, of } from 'rxjs';
+import {  loglist, Orelog } from './struct';
 @Injectable({
   providedIn: 'root'
 })
 export class ServerService {
   private addr: string  = "http://localhost:8090";
-  constructor(private http: HttpClient){ };
+  constructor(private http: HttpClient) { }
 
   //获取系统日志列表，参数page指定第几页
   GetLogCatalog (page:number){
@@ -18,5 +19,8 @@ export class ServerService {
     var url = this.addr + "/log/getlogtext?floder="+floder+"&&name="+name;
     return this.http.get<any>(url);
   }
-
+  //获取操作日志
+  public getorelog(): Observable<Orelog[]> {
+    return this.http.get<Orelog[]>('http://localhost:8090/log/logdisplay');
+}
 }

@@ -38,9 +38,31 @@
             </div>
       </nz-tab>
       <nz-tab nzTitle="操作记录">
-        Content of Tab Pane 2
+        <nz-table #rowSelectionTable
+      nzShowSizeChanger
+      [nzData]="orelogs"
+      (nzCurrentPageDataChange)="currentPageDataChange($event)">
+          <thead>
+            <tr>
+              <th>日志ID</th>
+              <th>操作时间</th>
+              <th>用户名</th>
+              <th>操作模块</th>
+              <th>操作内容</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orelog of orelogs">
+           
+              <td>{{orelog.logid}}</td>
+              <td>{{orelog.logtime}}</td>
+              <td>{{orelog.admin}}</td>
+              <td>{{orelog.module}}</td>
+              <td>{{orelog.logsql}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
       </nz-tab>
-    
     </nz-tabset>
   </div>
 </div>

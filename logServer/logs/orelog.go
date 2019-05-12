@@ -14,7 +14,7 @@ type orelog struct {
     Logid           string    `json:"logid"`
     Logtime         string    `json:"logtime"`
     Admin           string    `json:"admin"`
-    Module      	string    `json:"moudle"`
+    Module      	string    `json:"module"`
     Logsql   		string    `json:"logsql"`
 }
 
@@ -61,7 +61,7 @@ func Records(admin string, module string,logsql string){
 
 func Display(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
-    w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
     w.Header().Set("content-type", "application/json")
     var orelog []orelog
     orelog = Getorelog()
@@ -71,8 +71,19 @@ func Display(w http.ResponseWriter, r *http.Request){
 
 func Getorelog()[]orelog{
     var Orelog []orelog
-    if nowcategory!="" {
-        rows, err := db.Query("select logid,logtime,admin,module,logsql from oresql where $1=$2",nowcategory,nowcontent) 
+    // if nowcategory!="" {
+    //     rows, err := db.Query("select logid,logtime,admin,module,logsql from oresql where $1=$2",nowcategory,nowcontent) 
+    //     checkErr(err)
+    //     for rows.Next(){
+	// 	var orelog orelog
+	// 	err = rows.Scan(&orelog.Logid,&orelog.Logtime,&orelog.Admin,&orelog.Module,&orelog.Logsql)
+	// 	if err != nil {
+	// 		fmt.Println("showscan error:",err)
+	// 	}
+    //     Orelog=append(Orelog,orelog)
+	// }
+    // }else {
+        rows, err := db.Query("select logid,logtime,admin,module,logsql from t_orelog") 
         checkErr(err)
         for rows.Next(){
 		var orelog orelog
@@ -81,19 +92,8 @@ func Getorelog()[]orelog{
 			fmt.Println("showscan error:",err)
 		}
         Orelog=append(Orelog,orelog)
-	}
-    }else {
-        rows, err := db.Query("select logid,logtime,admin,module,logsql from oresql") 
-        checkErr(err)
-        for rows.Next(){
-		var orelog orelog
-		err = rows.Scan(&orelog.Logid,&orelog.Logtime,&orelog.Admin,&orelog.Module,&orelog.Logsql)
-		if err != nil {
-			fmt.Println("showscan error:",err)
-		}
-        Orelog=append(Orelog,orelog)
-	}
+	//}
     }
-    
+    fmt.Println("正在读取数据库")
     return Orelog
 }
