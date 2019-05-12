@@ -35,4 +35,9 @@ export class LogPageComponent implements OnInit {
     });
   }
 
+  updatelogtext(date:string,input:number, ty:string){
+    var tag = date +"_"+input;
+    this.Getlogtext(tag, ty);
+  }
+
 }

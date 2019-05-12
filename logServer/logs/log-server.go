@@ -50,23 +50,20 @@ func SendLogText(w http.ResponseWriter, r *http.Request){
 	floder := vars["floder"]
 	name := vars["name"]
 	if len(floder)==0 || len(name)==0 {
-		Println("require body is unll!")
+		Log(Err,"require body is unll!")
 		return
 	}
 	dir := strings.Replace(floder[0],"_","#",1)
 	path := dir + `/` + name[0]
-	Println(path)
 	logtext := readlogfile(path)
 	writeJson(w,logtext)
 }
 
-
-
 //read a logfile and save in a string array
 //the paramater should be the reference path of logfiles
 func readlogfile(path string)[]string{
+	Println("Readding log: ", path)
 	path = logs_root + path
-	Println(path)
 	var data []string
 	f, err := os.Open(path)
 	if err != nil {
@@ -128,7 +125,6 @@ func Readloglist()[]cataloge{
 		}
 		date_times[ dt[0] ] ++	
 	}
-	Println(data)
 	return data
 }
 

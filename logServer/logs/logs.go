@@ -17,7 +17,7 @@ const(
 	// you can set mew_log = 0 when you are testing,
 	// then it will cover the oldest flode to save the logsfiles 
 	//note that new_log should be 0 or 1 !
-	new_log = 0
+	new_log = 1
 )
  
 var(

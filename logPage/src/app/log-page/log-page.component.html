@@ -10,17 +10,17 @@
                     <div class="listbox">
                         <nz-collapse nzAccordion ><!--日期列表-->
                           <nz-collapse-panel *ngFor="let row1 of list" [nzHeader]="row1.name" >
-                              <nz-dropdown *ngFor="let row2 of row1.list"><!--第几次构建的日志-->
-                                  <a nz-dropdown> 第{{row2}}次构建<i nz-icon type="down"></i> </a>
+                              <nz-dropdown [nzTrigger]="click" *ngFor="let row2 of row1.list"><!--第几次构建的日志-->
+                                  <a nz-dropdown > 第{{row2}}次构建<i nz-icon type="down"></i> </a>
                                   <ul nz-menu nzSelectable>
                                     <li nz-menu-item>
-                                      <a>error.log</a>
+                                      <a (click)="updatelogtext(row1.name, row2, 'error.log')">error.log</a>
                                     </li>
                                     <li nz-menu-item>
-                                      <a>warning.log</a>
+                                      <a (click)="updatelogtext(row1.name, row2, 'warning.log')">warning.log</a>
                                     </li>
                                     <li nz-menu-item>
-                                      <a>inof.log</a>
+                                      <a (click)="updatelogtext(row1.name, row2, 'info.log')">info.log</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown>
