@@ -13,6 +13,8 @@ func main(){
 	mux.HandleFunc("/", logs.Testnet)
 	mux.HandleFunc("/log/getlogtext", logs.SendLogText)
 	mux.HandleFunc("/log/getlogpage", logs.SendLogList)
+	mux.HandleFunc("/log/logcategory", logs.Category)
+    mux.HandleFunc("/log/logdisplay", logs.Display)
 	server := &http.Server{
 		Addr : 			"localhost:8090",
 		Handler:        mux,
