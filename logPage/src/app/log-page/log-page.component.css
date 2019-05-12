@@ -8,9 +8,9 @@
 }
 #textbox{
     min-height: 500px;
-    background-color: antiquewhite;
+    background-color: white;
     border: 1px solid rosybrown;
-    padding: 10px;
+    padding: 10px 1px;
     margin: 0px 10px 20px 10px;
 }
 .log-body{
@@ -21,4 +21,17 @@
 }
 a{
     display: block;
+}
+.text{
+    border-left: 3px solid #6CE26C;
+    border-left: 3px solid #6CE26C;
+    padding: 0 3px 0 10px;
+    line-height: 22px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: inherit;
+    background-color: #FFF;
+}
+.text:nth-child(even){
+    background-color: #F8F8F8;
 }

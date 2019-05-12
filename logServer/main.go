@@ -4,9 +4,11 @@ import(
 	"./logs"
 	"net/http"
 	"fmt"
+	"os"
 )
 
 func main(){
+	//test()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", logs.Testnet)
 	mux.HandleFunc("/log/getlogtext", logs.SendLogText)
@@ -21,4 +23,9 @@ func main(){
 	if err!=nil {
 		fmt.Println(err)
 	}
+}
+
+func test(){
+
+	os.Exit(0)
 }

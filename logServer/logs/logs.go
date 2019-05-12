@@ -11,9 +11,12 @@ import (
 	"strconv"
 )
 
-//logs_root is the path saving the logs files
 const(
+	// is the path saving the logs files
 	logs_root= `./logs/logsfile/`
+	// you can set mew_log = 0 when testing,
+	// then it will not create new floder to save the logsfiles 
+	new_log = 0
 )
 
 var(
@@ -88,16 +91,20 @@ func createfloder()string{
 		fmt.Println("Can not read direcotry !")
 		panic(err)
 	}
-	filenum := 1
+	filenum := new_log
 	for _, fi := range rd {
 		if fi.IsDir(){
 			filenum++
-			println(fi.Name())
 		}
 	}
-	fmt.Println(filenum)
  	datestr := time.Now().Format("2006-01-02")
 	tempPath := logs_root + datestr + `#` + strconv.Itoa(filenum) + `\`
+	if new_log == 0 {
+		err := os.RemoveAll(tempPath)
+		if err!= nil {
+			Log(Err,"Remove director Fall : ",err)
+		}
+	}
 	err = os.Mkdir(tempPath, os.ModeDir)
 	if err!=nil{
 		fmt.Println("Can not make directory !")

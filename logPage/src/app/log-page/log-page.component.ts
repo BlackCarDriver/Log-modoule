@@ -13,7 +13,7 @@ export class LogPageComponent implements OnInit {
   constructor(private server :ServerService ) { }
     ngOnInit() {
     this.Getloglist(0);
-     this.Getlogtext("2019-05-12_1","error.log");
+     this.Getlogtext("2019-05-12_1","info.log");
   }
   filename = "";  //当前日志文本框显示的日志的文件名和路径
   page = 0; //当前浏览的是日志列表的第几页
