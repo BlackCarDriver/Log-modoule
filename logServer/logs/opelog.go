@@ -23,6 +23,7 @@ type classify struct {
     Content          string    `json:"content"`
 }
 
+
 var nowcontent string;
 var nowcategory string;
 
