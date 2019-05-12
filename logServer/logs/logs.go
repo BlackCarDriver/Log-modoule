@@ -14,11 +14,12 @@ import (
 const(
 	// is the path saving the logs files
 	logs_root= `./logs/logsfile/`
-	// you can set mew_log = 0 when testing,
-	// then it will not create new floder to save the logsfiles 
+	// you can set mew_log = 0 when you are testing,
+	// then it will cover the oldest flode to save the logsfiles 
+	//note that new_log should be 0 or 1 !
 	new_log = 0
 )
-
+ 
 var(
 	error_log_name = "error.log"
 	warn_log_name = "warning.log"

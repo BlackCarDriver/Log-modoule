@@ -26,6 +26,6 @@ func main(){
 }
 
 func test(){
-
+	logs.Readloglist();
 	os.Exit(0)
 }
