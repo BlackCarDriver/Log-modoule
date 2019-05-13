@@ -38,10 +38,9 @@
             </div>
       </nz-tab>
       <nz-tab nzTitle="操作记录">
-        <nz-table #rowSelectionTable
-      nzShowSizeChanger
-      [nzData]="orelogs"
-      (nzCurrentPageDataChange)="currentPageDataChange($event)">
+      <div style="background-color:#fff">
+        <nz-table #ajaxTable nzShowSizeChanger [nzFrontPagination]="true" [nzData]="orelogs" [(nzPageIndex)]="pageIndex" 
+        [(nzPageSize)]="pageSize" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData()">
           <thead>
             <tr>
               <th>日志ID</th>
@@ -52,19 +51,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let orelog of orelogs">
-           
-              <td>{{orelog.logid}}</td>
-              <td>{{orelog.logtime}}</td>
-              <td>{{orelog.admin}}</td>
-              <td>{{orelog.module}}</td>
-              <td>{{orelog.logsql}}</td>
+            <tr *ngFor="let data of ajaxTable.data">
+              <td>{{data.logid}}</td>
+              <td>{{data.logtime.substring(0, data.logtime.length-10)}}</td>
+              <td>{{data.admin}}</td>
+              <td>{{data.module}}</td>
+              <td>{{data.logsql}}</td>
             </tr>
           </tbody>
         </nz-table>
+        </div>
       </nz-tab>
     </nz-tabset>
   </div>
 </div>
-
 

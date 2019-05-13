@@ -35,7 +35,3 @@ a{
 .text:nth-child(even){
     background-color: #F8F8F8;
 }
-
-.td{
-    background-color: #FFF;
-}
