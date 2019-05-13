@@ -98,10 +98,12 @@ func Println(any ...interface{}) {
 
 //return the user file location, like "main.go"
 func getpath()string{
-	_,file,_,ok := runtime.Caller(2)
+	//Log()/Println() --> getpath() -->  Caller()
+	pc,file,_,ok := runtime.Caller(2)
 	if ok==false{
 		return "???"
 	}
+	//get caller code file name
 	short := file
 	for i := len(file) - 1; i > 0; i-- {
 		if file[i] == '/' {
@@ -109,7 +111,17 @@ func getpath()string{
 			break
 		}
 	}
-	return short
+	short2 := ""
+	//get caller function name
+	fun := runtime.FuncForPC(pc)
+	pcname := fun.Name()
+	for i:=len(pcname)-1;i>0;i--{
+		if pcname[i] == '.' {
+			short2 = pcname[i+1:]
+			break;
+		}
+	}
+	return short + " -> "+short2 +"()"
 }
 
 //set the format of pathstring
@@ -129,8 +141,17 @@ func formatInterface(prefix string, any ...interface{})string{
 func createfloder()string{
 	rd, err := ioutil.ReadDir(logs_root)
 	if err != nil {
-		fmt.Println("Can not read direcotry !")
-		panic(err)
+		fmt.Println("Can not read direcotry !",err)
+		err = os.Mkdir(logs_root, os.ModeDir)
+		if err!=nil {
+			fmt.Println("Can not read and create logs_root!")
+			panic(err)
+		}
+		fmt.Println("Create logs_roots scuess! :",logs_root)
+		rd, err = ioutil.ReadDir(logs_root)
+		if err!=nil {
+			panic(err)
+		}
 	}
 	filenum := new_log
 	for _, fi := range rd {

@@ -9,7 +9,7 @@ import(
 
 
 func main(){
-	//test()
+	test()
 	//logs.Records("dong","事件","delete youhreat")
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", logs.Testnet)
@@ -31,6 +31,6 @@ func main(){
 }
 
 func test(){
-	logs.Readloglist();
+	logs.Test();
 	os.Exit(0)
 }
