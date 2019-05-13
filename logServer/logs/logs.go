@@ -9,6 +9,7 @@ import (
 	"os"
 	"io/ioutil"
 	"strconv"
+	"database/sql"
 )
 
 const(
@@ -17,11 +18,17 @@ const(
 	// you can set mew_log = 0 when you are testing,
 	// then it will cover the oldest flode to save the logsfiles 
 	//note that new_ 
-	
 	//log should be 0 or 1 !
 	new_log = 1
 )
- 
+
+//the following constant are the paramater used in Log() style
+const (
+	Err = 400
+	Warn = 200
+	Q_err =-400
+	Q_warn =-200
+)
 
 var(
 	error_log_name = "error.log"
@@ -34,18 +41,10 @@ var warnlog *log.Logger
 var infolog *log.Logger
 
 
-//the following constant are the paramater used in Log() style
-const (
-	Err = 400
-	Warn = 200
-	Q_err =-400
-	Q_warn =-200
-)
 
 func init() {
 	//connect to database
-	testconnect()
-
+	//testconnect()
 	log_floder := createfloder()
 	errorp, err := os.Create(log_floder + error_log_name)
 	warnp, _ := os.Create(log_floder + warn_log_name)
@@ -58,6 +57,44 @@ func init() {
 	warnlog = log.New(warnp, "", 3)
 	infolog = log.New(infop, "", 3)
 }
+//initthe database pointer
+func GetDBp(p *sql.DB){
+	db = p
+}
+
+//write the message into logfile, style control the way you record the log,
+//style use Err and Q_err will record the logs into error.log, 
+//style use Warn and Q_warn will record the logs into warning.log,
+//note that Q_warn and Q_err will not output message on consloe
+func Log(style int, msg ...interface{}){
+	path := getpath()
+	path = formatPath(path)
+	s := formatInterface(path, msg...)
+	if style > 0 {
+		fmt.Println(s)
+	}else{
+		style = 0-style
+	} 
+	switch style {
+	case Err :
+		errlog.Println(s)
+	case Warn:
+		warnlog.Println(s)
+	}
+}
+
+//compare to fmt.Println, it Println will display the caller and record intto logfile
+func Println(any ...interface{}) {
+	path := getpath()
+	path = formatPath(path)
+	s := formatInterface(path , any...)
+	fmt.Println(s)
+	infolog.Println(s)
+}
+
+
+//=======================================================================================
+//===================== the following is subfunction ==================================== 
 
 //return the user file location, like "main.go"
 func getpath()string{
@@ -116,34 +153,3 @@ func createfloder()string{
 	}
 	return tempPath
 }
-
-//write the message into logfile, style control the way you record the log,
-//style use Err and Q_err will record the logs into error.log, 
-//style use Warn and Q_warn will record the logs into warning.log,
-//note that Q_warn and Q_err will not output message on consloe
-func Log(style int, msg ...interface{}){
-	path := getpath()
-	path = formatPath(path)
-	s := formatInterface(path, msg...)
-	if style > 0 {
-		fmt.Println(s)
-	}else{
-		style = 0-style
-	} 
-	switch style {
-	case Err :
-		errlog.Println(s)
-	case Warn:
-		warnlog.Println(s)
-	}
-}
-
-//compare to fmt.Println, it Println will display the caller and record intto logfile
-func Println(any ...interface{}) {
-	path := getpath()
-	path = formatPath(path)
-	s := formatInterface(path , any...)
-	fmt.Println(s)
-	infolog.Println(s)
-}
-

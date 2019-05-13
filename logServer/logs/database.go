@@ -17,6 +17,8 @@ const (                      //数据库登入信息
     dbname   = "management"
 )
 
+
+//connect to testing database 
 func testconnect() {
 	var err error
 	//if don't add 'sllmod=disable' there may export error "pq: SSL is not enabled on the server"

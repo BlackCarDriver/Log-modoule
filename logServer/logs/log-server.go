@@ -59,6 +59,7 @@ func SendLogText(w http.ResponseWriter, r *http.Request){
 	writeJson(w,logtext)
 }
 
+
 //read a logfile and save in a string array
 //the paramater should be the reference path of logfiles
 func readlogfile(path string)[]string{
