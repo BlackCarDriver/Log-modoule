@@ -9,6 +9,7 @@ import (
 	"os"
 	"io/ioutil"
 	"strconv"
+	"database/sql"
 )
 
 const(
@@ -17,11 +18,17 @@ const(
 	// you can set mew_log = 0 when you are testing,
 	// then it will cover the oldest flode to save the logsfiles 
 	//note that new_ 
-	
 	//log should be 0 or 1 !
 	new_log = 1
 )
- 
+
+//the following constant are the paramater used in Log() style
+const (
+	Err = 400
+	Warn = 200
+	Q_err =-400
+	Q_warn =-200
+)
 
 var(
 	error_log_name = "error.log"
@@ -34,18 +41,10 @@ var warnlog *log.Logger
 var infolog *log.Logger
 
 
-//the following constant are the paramater used in Log() style
-const (
-	Err = 400
-	Warn = 200
-	Q_err =-400
-	Q_warn =-200
-)
 
 func init() {
 	//connect to database
-	testconnect()
-
+	//testconnect()
 	log_floder := createfloder()
 	errorp, err := os.Create(log_floder + error_log_name)
 	warnp, _ := os.Create(log_floder + warn_log_name)
@@ -58,63 +57,9 @@ func init() {
 	warnlog = log.New(warnp, "", 3)
 	infolog = log.New(infop, "", 3)
 }
-
-//return the user file location, like "main.go"
-func getpath()string{
-	_,file,_,ok := runtime.Caller(2)
-	if ok==false{
-		return "???"
-	}
-	short := file
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			short = file[i+1:]
-			break
-		}
-	}
-	return short
-}
-
-//set the format of pathstring
-func formatPath(path string) string{
-	return  "[" + path + "] : "
-}
-
-//the raw ouput is like :[a,b,c]
-//and after it function handle, it will be : a  b  c
-func formatInterface(prefix string, any ...interface{})string{
-	formatstr := strings.Repeat("%v  ", len(any))
-	prefix += fmt.Sprintf(formatstr, any...)
-	return prefix
-}
-
-//create a new floder to save the logs file, return the path of new floder
-func createfloder()string{
-	rd, err := ioutil.ReadDir(logs_root)
-	if err != nil {
-		fmt.Println("Can not read direcotry !")
-		panic(err)
-	}
-	filenum := new_log
-	for _, fi := range rd {
-		if fi.IsDir(){
-			filenum++
-		}
-	}
- 	datestr := time.Now().Format("2006-01-02")
-	tempPath := logs_root + datestr + `#` + strconv.Itoa(filenum) + `\`
-	if new_log == 0 {
-		err := os.RemoveAll(tempPath)
-		if err!= nil {
-			Log(Err,"Remove director Fall : ",err)
-		}
-	}
-	err = os.Mkdir(tempPath, os.ModeDir)
-	if err!=nil{
-		fmt.Println("Can not make directory !")
-		panic(err)
-	}
-	return tempPath
+//initthe database pointer
+func GetDBp(p *sql.DB){
+	db = p
 }
 
 //write the message into logfile, style control the way you record the log,
@@ -147,3 +92,85 @@ func Println(any ...interface{}) {
 	infolog.Println(s)
 }
 
+
+//=======================================================================================
+//===================== the following is subfunction ==================================== 
+
+//return the user file location, like "main.go"
+func getpath()string{
+	//Log()/Println() --> getpath() -->  Caller()
+	pc,file,_,ok := runtime.Caller(2)
+	if ok==false{
+		return "???"
+	}
+	//get caller code file name
+	short := file
+	for i := len(file) - 1; i > 0; i-- {
+		if file[i] == '/' {
+			short = file[i+1:]
+			break
+		}
+	}
+	short2 := ""
+	//get caller function name
+	fun := runtime.FuncForPC(pc)
+	pcname := fun.Name()
+	for i:=len(pcname)-1;i>0;i--{
+		if pcname[i] == '.' {
+			short2 = pcname[i+1:]
+			break;
+		}
+	}
+	return short + " -> "+short2 +"()"
+}
+
+//set the format of pathstring
+func formatPath(path string) string{
+	return  "[" + path + "] : "
+}
+
+//the raw ouput is like :[a,b,c]
+//and after it function handle, it will be : a  b  c
+func formatInterface(prefix string, any ...interface{})string{
+	formatstr := strings.Repeat("%v  ", len(any))
+	prefix += fmt.Sprintf(formatstr, any...)
+	return prefix
+}
+
+//create a new floder to save the logs file, return the path of new floder
+func createfloder()string{
+	rd, err := ioutil.ReadDir(logs_root)
+	if err != nil {
+		fmt.Println("Can not read direcotry !",err)
+		err = os.Mkdir(logs_root, os.ModeDir)
+		if err!=nil {
+			fmt.Println("Can not read and create logs_root!")
+			panic(err)
+		}
+		fmt.Println("Create logs_roots scuess! :",logs_root)
+		rd, err = ioutil.ReadDir(logs_root)
+		if err!=nil {
+			panic(err)
+		}
+	}
+	filenum := new_log
+	for _, fi := range rd {
+		if fi.IsDir(){
+			filenum++
+		}
+	}
+ 	datestr := time.Now().Format("2006-01-02")
+	tempPath := logs_root + datestr + `#` + strconv.Itoa(filenum) + `\`
+	if new_log == 0 {
+		err := os.RemoveAll(tempPath)
+		if err!= nil {
+			Log(Err,"Remove director Fall : ",err)
+		}
+	}
+	err = os.Mkdir(tempPath, os.ModeDir)
+	if err!=nil{
+		fmt.Println("Can not make directory !")
+		panic(err)
+	}
+	return tempPath
+}
