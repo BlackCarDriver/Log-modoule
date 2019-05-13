@@ -10,7 +10,7 @@ import(
 
 func main(){
 	//test()
-	logs.Records("dong","事件","delete youhreat")
+	//logs.Records("dong","事件","delete youhreat")
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", logs.Testnet)
 	mux.HandleFunc("/log/getlogtext", logs.SendLogText)
