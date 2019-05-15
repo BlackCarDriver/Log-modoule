@@ -9,7 +9,8 @@ import * as $ from 'jquery'
 @Component({
   selector: 'app-log-page',
   templateUrl: './log-page.component.html',
-  styleUrls: ['./log-page.component.css']
+  styleUrls: ['./log-page.component.css'],
+  styles: []
 })
 
 export class LogPageComponent implements OnInit {
@@ -19,6 +20,11 @@ export class LogPageComponent implements OnInit {
     this.Getloglist(0);
      this.Getlogtext("2019-05-12_1","info.log");
   }
+
+  pageIndex = 1;  //操作日志首页码
+  pageSize = 10;   //操作日志每页条数
+  oreloglist = []   //操作日志
+
   filename = "";  //当前日志文本框显示的日志的文件名和路径
   page = 0; //当前浏览的是日志列表的第几页
   list = loglist[50]; //日志目录
@@ -60,8 +66,13 @@ export class LogPageComponent implements OnInit {
   public Getorelog() {           // 获取信息
     this.server.getorelog().subscribe(response => {
       this.orelogs = response;
+      //var testtrimresult = orelog.substring(0, testtrim.length-2);
     });
   }
 
+  // 操作日志分页
+searchData(): void {
+    this.oreloglist = this.orelogs.slice((this.pageIndex - 1) * this.pageSize, (this.pageIndex) * this.pageSize);
+  }
 
 }
