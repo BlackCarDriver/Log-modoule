@@ -35,7 +35,8 @@ func SendLogText(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	dir := strings.Replace(floder[0],"_","#",1)
-	path := dir + `/` + name[0]
+	ps :=  getPathSeperator()
+	path := dir + ps + name[0]
 	logtext := readlogfile(path)
 	writeJson(w,logtext)
 }

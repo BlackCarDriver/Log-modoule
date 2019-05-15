@@ -18,15 +18,6 @@ export class LogPageComponent implements OnInit {
       this.Getorelog();
     this.Getloglist(0);
      this.Getlogtext("2019-05-12_1","info.log");
-
-     for (let i = 0; i < 100; i++) {
-      this.listOfAllData.push({
-        id: i,
-        name: `Edward King ${i}`,
-        age: 32,
-        address: `London, Park Lane no. ${i}`
-      });
-    }
   }
   filename = "";  //当前日志文本框显示的日志的文件名和路径
   page = 0; //当前浏览的是日志列表的第几页
