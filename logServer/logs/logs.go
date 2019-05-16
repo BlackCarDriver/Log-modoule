@@ -1,17 +1,24 @@
 package logs
 
 import (
-	//"../models"
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
+	"log"
+	"fmt"
 )
 
-func Records(admin string, content string){       //添加日志(登录)
+type opelog struct {
+	Index           string    `json:"index"`
+	Logid          string    `json:"logid"`
+    Types        	string    `json:"type"`
+    Operator        string    `json:"operator"`
+    Time            string    `json:"time"`
+    Operation    	string    `json:"operation"`
+}
+
+func Records(operator string, operation string){       //添加日志(登录)
 	log.Println("正在添加日志...")
-    rows, err := db.Prepare("insert into t_opelog (admin,content) values($1,$2)")
+    rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
     checkErr(err)
-    _,err = rows.Exec(admin, content)
+    _,err = rows.Exec(operator, operation)
     checkErr(err)
     log.Println("日志添加成功！")
 }
@@ -19,22 +26,22 @@ func Records(admin string, content string){       //添加日志(登录)
 func Getlogs()[]opelog{
     var Opelog []opelog
     if nowsearch!="" {
-        rows, err := db.Query("select logid,module,admin,logtime,content from oresql where module=$2",nowsearch) 
+        rows, err := db.Query("select logid,type,operation,time,operation from oresql where type=$2",nowsearch) 
         checkErr(err)
         for rows.Next(){
 		var opelog opelog
-		err = rows.Scan(&opelog.Logid,&opelog.Module,&opelog.Admin,&opelog.Logtime,&opelog.Content)
+		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
 		if err != nil {
 			fmt.Println("showscan error:",err)
 		}
         Opelog=append(Opelog,opelog)
 	}
     }else {
-        rows, err := db.Query("select logid,module,admin,logtime,content from t_opelog") 
+        rows, err := db.Query("select logid,type,operation,time,operation from t_opelog") 
         checkErr(err)
         for rows.Next(){
 		var opelog opelog
-		err = rows.Scan(&opelog.Logid,&opelog.Logtime,&opelog.Admin,&opelog.Module,&opelog.Content)
+		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
 		if err != nil {
 			fmt.Println("showscan error:",err)
 		}

@@ -5,18 +5,13 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"log"
+	"fmt"
 )
 
-type opelog struct {
-    Logid           string    `json:"logid"`
-    Module      	string    `json:"module"`
-    Admin           string    `json:"admin"`
-    Logtime         string    `json:"logtime"`
-    Content   		string    `json:"content"`
-}
 
 type classify struct {
-    Search           string    `json:"search"`
+    Search          string    `json:"search"`
 }
 
 var nowcontent string;
@@ -47,8 +42,8 @@ func Display(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
     w.Header().Set("content-type", "application/json")
-    var opelog []opelog
-    opelog = Getlogs()
+	var opelog []opelog
+	opelog = Getlogs()
 	data, _ := json.Marshal(opelog)
     fmt.Fprintf(w,string(data))
 }
