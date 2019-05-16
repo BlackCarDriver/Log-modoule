@@ -4,16 +4,16 @@
     <div class="mainbox">
         <div nz-row class="select-row">
             <span class="opn-name"> 选择类型</span>
-            <nz-select  [ngModel]="'Option2-1'" id="log-type">
-                <nz-option [nzLabel]="'全部类别'" [nzValue]="'Option2-1'"></nz-option>
-                <nz-option [nzLabel]="'错误'" [nzValue]="'Option2-2'"></nz-option>
-                <nz-option [nzLabel]="'成功'" [nzValue]="'Option2-3'"></nz-option>
-                <nz-option [nzLabel]="'警告'" [nzValue]="'Option2-4'"></nz-option>
+            <nz-select  [(ngModel)]="selecttype"   nzPlaceHolder="全部类型" id="log-type"  (ngModelChange)="updatatype($event)">
+                <nz-option [nzLabel]="'全部类别'" [nzValue]="'all'"></nz-option>
+                <nz-option [nzLabel]="'错误'" [nzValue]="'error'"></nz-option>
+                <nz-option [nzLabel]="'成功'" [nzValue]="'scuess'"></nz-option>
+                <nz-option [nzLabel]="'警告'" [nzValue]="'warn'"></nz-option>
         </nz-select>
         </div>
         <div nz-row class="table-body">
-            <hr>
-            <nz-table #basicTable [nzData]="listOfData">
+
+            <nz-table #basicTable [nzData]="listOfData" [nzShowPagination]="false" [(nzPageIndex)]="packindex" [nzPageSize]="11" [nzTotal]="rowsnumber">
                 <thead>
                   <tr>
                     <th>序号</th>
@@ -25,18 +25,23 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let data of basicTable.data">
-                    <td>{{ data.name }}</td>
-                    <td>{{ data.age }}</td>
-                    <td>{{ data.address }}</td>
-                    <td>
-                      <a>Action 一 {{ data.name }}</a>
-                      <nz-divider nzType="vertical"></nz-divider>
-                      <a>Delete</a>
-                    </td>
-                    <td>hhh</td>
+                    <td>{{ data.index}}</td>
+                    <td>{{ data.type }}</td>
+                    <td>{{ data.operator }}</td>
+                    <td>{{ data.time}}</td>
+                    <td>{{ data.operation }}</td>
                   </tr>
                 </tbody>
               </nz-table>
+
+              <div nz-row >
+                <div   class="pagebox">
+                  <div nz-col nzSoan="24">
+                  <nz-pagination [(nzPageIndex)]="packindex"  [nzPageSize]="11" [nzTotal]="rowsnumber" (nzPageIndexChange)="updatapage()"></nz-pagination>
+                  </div>
+                </div>
+              </div>
+
         </div>
        
     </div>

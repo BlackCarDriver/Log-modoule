@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-log-page',
@@ -9,66 +9,64 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 
 export class LogPageComponent implements OnInit {
+
   private addr: string  = "http://localhost:8090";
-  // private addr:string= "api";
+
+  totalrowsr:number=0;     //数据总数
+  haverows:number=0;       //当前已有数据行数
+  rowsnumber :number = 0;  //返回的数据一共有多少行
+  packindex : number=1;    //当前的所在页数
+  selecttype:string="all"; //加载日志的类型
+  listOfData : log[];      //日志
 
   constructor(private http: HttpClient) { }
-  ngOnInit() {}
 
-  pageIndex = 1;  //操作日志首页码
-  pageSize = 10;   //操作日志每页条数
-  oreloglist = []   //操作日志
-  
-  // tslint:disable-next-line:member-ordering
-  public orelogs: Orelog[];
-
-  public orelog: Orelog = {
-    logid: 0,
-    logtime: '',
-    admin:'',
-    module:'',
-    logsql:''
-  };
-  listOfData = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park'
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park'
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park'
-    }
-  ];
-  // 请求操作日志内容
-  public Getorelog() {           // 获取信息
-    let url = this.addr + '/log/logdisplay';
-    this.http.get<Orelog[]>(url).subscribe(response => {
-      this.orelogs = response;
-      //var testtrimresult = orelog.substring(0, testtrim.length-2);
-    });
+  ngOnInit() {
+    this.getdata("hahaha",this.haverows);
+    this.rowsnumber = this.listOfData.length;
+  }
+  //获取日志列表，参数是类型和开始获取的下标index，
+  //注意每页能够显示11行,每次从index开始请求5页数据，
+  getdata(params:string, index:number){
+      this.listOfData = listOfData;
+      let url = this.addr + "/logsmanage/checklogs";
+      // this.http.get
   }
 
-  // 操作日志分页
-  searchData(): void {
-    this.oreloglist = this.orelogs.slice((this.pageIndex - 1) * this.pageSize, (this.pageIndex) * this.pageSize);
+  //由页数选择改变触发
+  updatapage(){
+    this.getdata(this.selecttype, 0);
+  }
+  //又类型选择改变触发
+  updatatype(t:any){
+    this.selecttype = t;
+    this.getdata(t, 0);
   }
 
 }
 
-class Orelog {
-  public logid:       number;
-  public logtime:     string;
-  public admin:       string;
-  public module:      string;
-  public logsql:      string;
+//日志元组结构体
+class log{
+   index:number;
+   type:string;
+   operator:string;
+   time:string;
+   operation:string;
 }
+
+//模拟数据
+var listOfData = [
+  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:3, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:3, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+  {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
+
+];
