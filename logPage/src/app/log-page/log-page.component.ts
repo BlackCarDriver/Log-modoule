@@ -17,20 +17,22 @@ export class LogPageComponent implements OnInit {
   rowsnumber :number = 0;  //返回的数据一共有多少行
   packindex : number=1;    //当前的所在页数
   selecttype:string="all"; //加载日志的类型
-  listOfData : log[];      //日志
+  listOfData : log[] = [];      //日志
 
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.getdata("hahaha",this.haverows);
-    this.rowsnumber = this.listOfData.length;
+    this.getdata("warn",this.haverows);
   }
   //获取日志列表，参数是类型和开始获取的下标index，
   //注意每页能够显示11行,每次从index开始请求5页数据，
   getdata(params:string, index:number){
-      this.listOfData = listOfData;
-      let url = this.addr + "/logsmanage/checklogs";
-      // this.http.get
+      let url = this.addr + `/log/getlog?type=${params}&&index=${index}`;
+      this.http.get<any>(url).subscribe(result=>{
+        console.log(result);
+       this.listOfData = result.log;
+       this.rowsnumber = result.rowsnumber;
+      });
   }
 
   //由页数选择改变触发
@@ -57,16 +59,5 @@ class log{
 //模拟数据
 var listOfData = [
   {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
   {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:3, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:3, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:4, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:1, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-  {index:2, type: 'John Brown',  operator: "blackcardriver", time: '2019-11-22', operation:"登录系统" },
-
 ];

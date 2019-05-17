@@ -1,14 +1,16 @@
 package logs
 
 import (
-	//"../models"
 	"net/http"
     "fmt"
     "encoding/json"
+    "time"
+	"strings"
     "strconv"
 )
 
 //==============================================================================
+
 type returndata struct{
     Rowsnumber int `json:"rowsnumber"` ;
     Log        []opelog     `json:"log"`;
@@ -16,36 +18,67 @@ type returndata struct{
 
 //数据库查询并返回日志，参数：日志类型,起始下标
 //客户端页面每页显示11行数据,所以每次加载日志行数应为11的倍数
-func getlogdata(ty string, index int) returndata{
+func getlogdata(ty string, index int)(data returndata){
     var logsdata []opelog;
-    var rowsnumber int;
-    sql1 := `select count(*) from t_opelog where types=$1`;
+    var rowsnumber int
+    var err error
+    sql1 := `select count(logid) from t_opelog where types=$1`;
     sql2 := `select types,operator,logtime,operation from t_opelog where types=$1 offset $2 limit 55`
-    row := db.QueryRow(sql1, ty)
-    err := row.Scan(&rowsnumber)
-    if err!=nil {
-        fmt.Println(err)
-    }
-    rows, err2 := db.Query(sql2,ty,index)
-    if err2!=nil{
-        fmt.Println(err2)
-    } 
-    for rows.Next(){
-        var temp opelog;
-        err2 = rows.Scan(&temp.Types, &temp.Operator, &temp.Time, &temp.Operation)
-        if err2 != nil {
-            fmt.Println(err2)
-            break
+    sql3 := `select count(logid) from t_opelog`;
+    sql4 := `select types,operator,logtime,operation from t_opelog offset $1 limit 55`
+    if ty=="all" {  //全部查询
+        row := db.QueryRow(sql3)
+        err = row.Scan(&rowsnumber)
+        if err!=nil {
+            
         }
-        logsdata = append(logsdata,temp)
+        rows, err2 := db.Query(sql4,index)
+        if err2!=nil{
+            return
+        } 
+        var i =1
+        for rows.Next(){
+            var temp opelog;
+          
+            err = rows.Scan(&temp.Types, &temp.Operator, &temp.Time, &temp.Operation)
+            if err != nil {
+                break
+            }
+            temp.Index = i
+            i+=1
+            temp.Time = parsetime( temp.Time )
+            logsdata = append(logsdata,temp)
+        }
+    }else{       //条件查询
+        row := db.QueryRow(sql1, ty)
+        err := row.Scan(&rowsnumber)
+        if err!=nil {
+            fmt.Println(err)
+        }
+        rows, err2 := db.Query(sql2,ty,index)
+        if err2!=nil{
+            fmt.Println(err2)
+        } 
+        var i =1
+        for rows.Next(){
+            var temp opelog;
+            temp.Index = i
+            i+=1
+            err2 = rows.Scan(&temp.Types, &temp.Operator, &temp.Time, &temp.Operation)
+            if err2 != nil {
+                fmt.Println(err2)
+                break
+            }
+            temp.Time = parsetime( temp.Time )
+            logsdata = append(logsdata,temp)
+        }
     }
-    var data returndata
     data.Rowsnumber = rowsnumber;
     data.Log = logsdata;
     return data
 }
 
-// (url) /log/getlog
+//http://localhost:8090/log/getlog?type=warn&&index=0
 //接收请求并返回日志数据
 func GetLogs(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "*")            
@@ -64,19 +97,29 @@ func GetLogs(w http.ResponseWriter, r *http.Request) {
         fmt.Println(err)
         return
     }
-    fmt.Println(tag[0],"     ",index)
     data := getlogdata(tag[0], index)
     jsondata, _ := json.Marshal(data)
     w.Write(jsondata)
 	return
 }
 
+//格式化时间字符串
+func parsetime( timestr string)string{
+	format:= "2006-01-02T15:04:05Z"
+	time,err := time.Parse(format, timestr)
+	if err!=nil {
+		fmt.Println(err)
+	    return ""
+	}
+	str := time.String()
+	str = strings.Split(str,".")[0]
+    return str
+}
+
+
+
 
 //==============================================================================
-
-
-
-
 
 
 /* recycle bin
