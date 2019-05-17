@@ -17,11 +17,11 @@ type opelog struct {
 }
 
 
-func Records(operator string, operation string){       //添加日志(登录)
+func Records(types string, operator string, operation string){       //添加日志(登录)
 	log.Println("正在添加日志...")
-    rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
+    rows, err := db.Prepare("insert into t_opelog (types,operator,operation) values($1,$2,$3)")
     checkErr(err)
-    _,err = rows.Exec(operator, operation)
+    _,err = rows.Exec(types, operator, operation)
     checkErr(err)
     log.Println("日志添加成功！")
 }

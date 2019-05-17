@@ -8,6 +8,7 @@ import(
 
 //测试入口
 func Main(){
+	Records("success","dong","登入成功")
 	mux := http.NewServeMux()
 	mux.HandleFunc("/log/getlog", GetLogs)
 	server := &http.Server{
