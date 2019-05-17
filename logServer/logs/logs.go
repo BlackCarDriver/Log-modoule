@@ -1,6 +1,10 @@
 package logs
 
 import (
+	//"../models"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
 	"log"
     "fmt"
     "net/http"
@@ -91,8 +95,33 @@ func Records(operator string, operation string){       //添加日志(登录)
     rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
     checkErr(err)
     _,err = rows.Exec(operator, operation)
+
+type classify struct {
+    Search          string    `json:"search"`
+}
+
+var nowcontent string;
+var nowsearch string;
+
+func checkErr(err error) {   //报错
+    if err != nil {
+        log.Println("出错啦!")
+        panic(err)
+    }
+}
+
+func Search(w http.ResponseWriter, r *http.Request){          //获取查询
+    w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+    w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+    w.Header().Set("content-type", "application/json")
+    defer r.Body.Close()
+    con, err := ioutil.ReadAll(r.Body) //获取post的数据
     checkErr(err)
-    log.Println("日志添加成功！")
+    su := &classify{}         //把json转换回来
+    json.Unmarshal([]byte(con), &su)
+    fmt.Println("客户端输入：")
+    fmt.Println("\tsearch:", su.Search)
+    nowsearch=su.Search;
 }
 
 func Getlogs()[]opelog{
@@ -123,3 +152,12 @@ func Getlogs()[]opelog{
     fmt.Println("正在读取数据库")
     return Opelog
 }   
+func Display(w http.ResponseWriter, r *http.Request){         //
+	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
+    w.Header().Set("content-type", "application/json")
+	var opelog []opelog
+	opelog = Getlogs()
+	data, _ := json.Marshal(opelog)
+    fmt.Fprintf(w,string(data))
+}
