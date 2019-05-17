@@ -2,24 +2,11 @@ package logs
 
 import (
 	//"../models"
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
-	"log"
     "fmt"
-    "net/http"
     "encoding/json"
     "strconv"
 )
-
-type opelog struct {
-	Index           string    `json:"index"`
-	Logid          string     `json:"logid"`
-    Types        	string    `json:"type"`
-    Operator        string    `json:"operator"`
-    Time            string    `json:"time"`
-    Operation    	string    `json:"operation"`
-}
 
 //==============================================================================
 type returndata struct{
@@ -83,6 +70,7 @@ func GetLogs(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+
 //==============================================================================
 
 
@@ -90,25 +78,24 @@ func GetLogs(w http.ResponseWriter, r *http.Request) {
 
 
 
+/* recycle bin
+
 func Records(operator string, operation string){       //添加日志(登录)
 	log.Println("正在添加日志...")
     rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
     checkErr(err)
     _,err = rows.Exec(operator, operation)
+}
 
 type classify struct {
     Search          string    `json:"search"`
 }
 
+//参数不要用全局变量来传,多线程时可能会出错
+
 var nowcontent string;
 var nowsearch string;
 
-func checkErr(err error) {   //报错
-    if err != nil {
-        log.Println("出错啦!")
-        panic(err)
-    }
-}
 
 func Search(w http.ResponseWriter, r *http.Request){          //获取查询
     w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
@@ -152,7 +139,7 @@ func Getlogs()[]opelog{
     fmt.Println("正在读取数据库")
     return Opelog
 }   
-func Display(w http.ResponseWriter, r *http.Request){         //
+func Display(w http.ResponseWriter, r *http.Request){        
 	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
     w.Header().Set("content-type", "application/json")
@@ -161,3 +148,5 @@ func Display(w http.ResponseWriter, r *http.Request){         //
 	data, _ := json.Marshal(opelog)
     fmt.Fprintf(w,string(data))
 }
+
+*/

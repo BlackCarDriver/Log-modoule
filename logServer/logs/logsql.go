@@ -2,7 +2,7 @@ package logs
 
 import (
 	"log"
-    "fmt"
+    // "fmt"
     _ "github.com/lib/pq"
     //"encoding/json"
 )
@@ -16,9 +16,6 @@ type opelog struct {
     Operation    	string    `json:"operation"`
 }
 
-type pages struct {
-	Pages           int     `json:"pages`
-}
 
 func Records(operator string, operation string){       //添加日志(登录)
 	log.Println("正在添加日志...")
@@ -27,6 +24,24 @@ func Records(operator string, operation string){       //添加日志(登录)
     _,err = rows.Exec(operator, operation)
     checkErr(err)
     log.Println("日志添加成功！")
+}
+
+func checkErr(err error) {   //报错
+    if err != nil {
+        log.Println("出错啦!")
+        panic(err)
+    }
+}
+
+
+
+
+
+/* receyle bin
+
+
+type pages struct {
+	Pages           int     `json:"pages`
 }
 
 func Getlogs()[]opelog{
@@ -57,6 +72,8 @@ func Getlogs()[]opelog{
     fmt.Println("正在读取数据库")
     return Opelog
 }
+
+*/
 
 // func Totalpages(){
 //     p := &pages{}
