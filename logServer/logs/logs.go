@@ -19,8 +19,8 @@ type returndata struct{
 func getlogdata(ty string, index int) returndata{
     var logsdata []opelog;
     var rowsnumber int;
-    sql1 := `select count(*) from t_logs where type=$1`;
-    sql2 := `select type,operation,time,operation from oresqlwhere type=$1 offset $1 limit 55 `
+    sql1 := `select count(*) from t_opelog where types=$1`;
+    sql2 := `select types,operator,logtime,operation from t_opelog where types=$1 offset $2 limit 55`
     row := db.QueryRow(sql1, ty)
     err := row.Scan(&rowsnumber)
     if err!=nil {
@@ -64,6 +64,7 @@ func GetLogs(w http.ResponseWriter, r *http.Request) {
         fmt.Println(err)
         return
     }
+    fmt.Println(tag[0],"     ",index)
     data := getlogdata(tag[0], index)
     jsondata, _ := json.Marshal(data)
     w.Write(jsondata)

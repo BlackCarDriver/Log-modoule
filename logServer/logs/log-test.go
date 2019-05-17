@@ -6,7 +6,8 @@ import(
 )
 
 
-func test_server(){
+//测试入口
+func Main(){
 	mux := http.NewServeMux()
 	mux.HandleFunc("/log/getlog", GetLogs)
 	server := &http.Server{
