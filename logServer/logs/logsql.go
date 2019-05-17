@@ -1,49 +1,74 @@
 package logs
 
 import (
-	//"../models"
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
 	"log"
-	"fmt"
+    "fmt"
+    _ "github.com/lib/pq"
+    //"encoding/json"
 )
 
-
-type classify struct {
-    Search          string    `json:"search"`
+type opelog struct {
+	Index           int    `json:"index"`
+	Logid           int    `json:"logid"`
+    Types        	string    `json:"type"`
+    Operator        string    `json:"operator"`
+    Time            string    `json:"time"`
+    Operation    	string    `json:"operation"`
 }
 
-var nowcontent string;
-var nowsearch string;
-
-func checkErr(err error) {   //报错
-    if err != nil {
-        log.Println("出错啦!")
-        panic(err)
-    }
+type pages struct {
+	Pages           int     `json:"pages`
 }
 
-func Search(w http.ResponseWriter, r *http.Request){          //获取查询
-    w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
-    w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
-    w.Header().Set("content-type", "application/json")
-    defer r.Body.Close()
-    con, err := ioutil.ReadAll(r.Body) //获取post的数据
+func Records(operator string, operation string){       //添加日志(登录)
+	log.Println("正在添加日志...")
+    rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
     checkErr(err)
-    su := &classify{}         //把json转换回来
-    json.Unmarshal([]byte(con), &su)
-    fmt.Println("客户端输入：")
-    fmt.Println("\tsearch:", su.Search)
-    nowsearch=su.Search;
+    _,err = rows.Exec(operator, operation)
+    checkErr(err)
+    log.Println("日志添加成功！")
 }
 
-func Display(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
-    w.Header().Set("content-type", "application/json")
-	var opelog []opelog
-	opelog = Getlogs()
-	data, _ := json.Marshal(opelog)
-    fmt.Fprintf(w,string(data))
+func Getlogs()[]opelog{
+    var Opelog []opelog
+    if nowsearch!="" {
+        rows, err := db.Query("select logid,type,operation,time,operation from oresql where type=$2",nowsearch) 
+        checkErr(err)
+        for rows.Next(){
+		var opelog opelog
+		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
+		if err != nil {
+			fmt.Println("showscan error:",err)
+		}
+        Opelog=append(Opelog,opelog)
+	}
+    }else {
+        rows, err := db.Query("select logid,type,operation,time,operation from t_opelog") 
+        checkErr(err)
+        for rows.Next(){
+		var opelog opelog
+		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
+		if err != nil {
+			fmt.Println("showscan error:",err)
+		}
+        Opelog=append(Opelog,opelog)
+	}
+    }
+    fmt.Println("正在读取数据库")
+    return Opelog
 }
+
+// func Totalpages(){
+//     p := &pages{}
+//     rows, err := db.Query("SELECT COUNT(*) from opelog;") 
+//     checkErr(err)
+//     for rows.Next(){
+// 		var page int
+//         err = rows.Scanp(&page)
+//         checkErr(err)
+//         p.pages = page
+//     }
+//     rows.Close()
+//     data, err := json.Marshal(p)
+//     return data
+// }

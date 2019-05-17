@@ -1,53 +1,49 @@
 package logs
 
 import (
+	//"../models"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
 	"log"
 	"fmt"
 )
 
-type opelog struct {
-	Index           string    `json:"index"`
-	Logid          string    `json:"logid"`
-    Types        	string    `json:"type"`
-    Operator        string    `json:"operator"`
-    Time            string    `json:"time"`
-    Operation    	string    `json:"operation"`
+
+type classify struct {
+    Search          string    `json:"search"`
 }
 
-func Records(operator string, operation string){       //添加日志(登录)
-	log.Println("正在添加日志...")
-    rows, err := db.Prepare("insert into t_opelog (operator,operation) values($1,$2)")
-    checkErr(err)
-    _,err = rows.Exec(operator, operation)
-    checkErr(err)
-    log.Println("日志添加成功！")
-}
+var nowcontent string;
+var nowsearch string;
 
-func Getlogs()[]opelog{
-    var Opelog []opelog
-    if nowsearch!="" {
-        rows, err := db.Query("select logid,type,operation,time,operation from oresql where type=$2",nowsearch) 
-        checkErr(err)
-        for rows.Next(){
-		var opelog opelog
-		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
-		if err != nil {
-			fmt.Println("showscan error:",err)
-		}
-        Opelog=append(Opelog,opelog)
-	}
-    }else {
-        rows, err := db.Query("select logid,type,operation,time,operation from t_opelog") 
-        checkErr(err)
-        for rows.Next(){
-		var opelog opelog
-		err = rows.Scan(&opelog.Logid,&opelog.Types,&opelog.Operator,&opelog.Time,&opelog.Operation)
-		if err != nil {
-			fmt.Println("showscan error:",err)
-		}
-        Opelog=append(Opelog,opelog)
-	}
+func checkErr(err error) {   //报错
+    if err != nil {
+        log.Println("出错啦!")
+        panic(err)
     }
-    fmt.Println("正在读取数据库")
-    return Opelog
+}
+
+func Search(w http.ResponseWriter, r *http.Request){          //获取查询
+    w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+    w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+    w.Header().Set("content-type", "application/json")
+    defer r.Body.Close()
+    con, err := ioutil.ReadAll(r.Body) //获取post的数据
+    checkErr(err)
+    su := &classify{}         //把json转换回来
+    json.Unmarshal([]byte(con), &su)
+    fmt.Println("客户端输入：")
+    fmt.Println("\tsearch:", su.Search)
+    nowsearch=su.Search;
+}
+
+func Display(w http.ResponseWriter, r *http.Request){         //
+	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type") //header的类型
+    w.Header().Set("content-type", "application/json")
+	var opelog []opelog
+	opelog = Getlogs()
+	data, _ := json.Marshal(opelog)
+    fmt.Fprintf(w,string(data))
 }
