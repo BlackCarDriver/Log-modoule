@@ -19,24 +19,25 @@ type returndata struct{
 //数据库查询并返回日志，参数：日志类型,起始下标
 //客户端页面每页显示11行数据,所以每次加载日志行数应为11的倍数
 func getlogdata(ty string, index int)(data returndata){
+    fmt.Println(ty,"   ",index)
     var logsdata []opelog;
     var rowsnumber int
     var err error
     sql1 := `select count(logid) from t_opelog where types=$1`;
-    sql2 := `select types,operator,logtime,operation from t_opelog where types=$1 offset $2 limit 55`
+    sql2 := `select types,operator,logtime,operation from t_opelog where types=$1 offset $2 limit 110`
     sql3 := `select count(logid) from t_opelog`;
-    sql4 := `select types,operator,logtime,operation from t_opelog offset $1 limit 55`
+    sql4 := `select types,operator,logtime,operation from t_opelog offset $1 limit 110`
     if ty=="all" {  //全部查询
         row := db.QueryRow(sql3)
         err = row.Scan(&rowsnumber)
         if err!=nil {
-            
+            return
         }
         rows, err2 := db.Query(sql4,index)
         if err2!=nil{
             return
         } 
-        var i =1
+        var i = index+1
         for rows.Next(){
             var temp opelog;
           
@@ -59,7 +60,7 @@ func getlogdata(ty string, index int)(data returndata){
         if err2!=nil{
             fmt.Println(err2)
         } 
-        var i =1
+        var i = index+1
         for rows.Next(){
             var temp opelog;
             temp.Index = i

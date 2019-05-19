@@ -13,14 +13,14 @@
         </div>
         <div nz-row class="table-body">
 
-            <nz-table #basicTable [nzData]="listOfData" [nzShowPagination]="false" [(nzPageIndex)]="packindex" [nzPageSize]="11" [nzTotal]="rowsnumber">
+            <nz-table #basicTable [nzData]="listOfData" [nzShowPagination]="false" [(nzPageIndex)]="tpackindex" [nzPageSize]="11">
                 <thead>
                   <tr>
                     <th>序号</th>
                     <th>日志类型</th>
                     <th>操作者</th>
-                    <th>操作时间</th>
                     <th>操作内容</th>
+                    <th>操作时间</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -28,8 +28,8 @@
                     <td>{{ data.index}}</td>
                     <td>{{ data.type }}</td>
                     <td>{{ data.operator }}</td>
-                    <td>{{ data.time}}</td>
                     <td>{{ data.operation }}</td>
+                    <td>{{ data.time}}</td>
                   </tr>
                 </tbody>
               </nz-table>
@@ -37,7 +37,7 @@
               <div nz-row >
                 <div   class="pagebox">
                   <div nz-col nzSoan="24">
-                  <nz-pagination [(nzPageIndex)]="packindex"  [nzPageSize]="11" [nzTotal]="rowsnumber" (nzPageIndexChange)="updatapage()"></nz-pagination>
+                  <nz-pagination [(nzPageIndex)]="packindex"  [nzPageSize]="11" [nzTotal]="totalrows" (nzPageIndexChange)="updatapage()"></nz-pagination>
                   </div>
                 </div>
               </div>
