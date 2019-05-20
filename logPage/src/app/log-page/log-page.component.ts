@@ -30,8 +30,11 @@ export class LogPageComponent implements OnInit {
   getdata(params:string, index:number){
       let url = this.addr + `/log/getlog?type=${params}&&index=${(index-1)*11}`;
       this.http.get<any>(url).subscribe(result=>{
-       this.listOfData = result.log;
-       this.totalrows = result.rowsnumber;
+        console.log(result);
+        this.totalrows = result.rowsnumber;
+        if(this.totalrows!=0){
+          this.listOfData = result.log;
+        }else this.listOfData = [];
        this.packlap = index -1;
        this.pagerang[0] = index;
        this.pagerang[1] = index + parseInt(this.listOfData.length/11 + "");
